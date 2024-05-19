@@ -53,6 +53,6 @@ def main():
     # Convert model output to dataframe format and then to file
     y_test = np.array([range(1, y_test.shape[0]+1), y_test.numpy()])
     predictions = pd.DataFrame(y_test.T, columns=['ImageId', 'Label'])
-    d.write_prediction('dataset/digit-recognizer/predictions.csv', predictions)
+    predictions.to_csv('dataset/digit-recognizer/predictions.csv', index=False)
     
 main()

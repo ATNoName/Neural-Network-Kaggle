@@ -43,9 +43,14 @@ def label_split(data = Dataset, label = str()):
     data = data.dataset.drop(label, axis=1)
     return data, labels
 
-def write_prediction(file_path, predictions):
+def get_test_ids(data = pd.DataFrame, id = 'Id'):
+    '''Get the ids of the test data'''
+    return data.loc[:, id]
+
+def write_prediction(file_path, id, predictions):
     '''Writes the predictions to a file'''
     try:
-        predictions.to_csv(file_path, index=False)
+        dt = pd.concat([id, predictions], axis=1)
+        dt.to_csv(file_path, index=False)
     except:
         print('Error writing to file')

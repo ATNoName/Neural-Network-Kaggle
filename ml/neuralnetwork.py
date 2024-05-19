@@ -6,7 +6,7 @@ class BasicNN(nn.Module):
     def __init__(self, input_size, hidden_size, hidden_layer, output_size):
         super(BasicNN, self).__init__()
         self.input_to_hidden = nn.Linear(input_size, hidden_size)
-        self.activation = nn.ReLU()
+        self.activation = nn.LeakyReLU()
         if hidden_layer > 1:
             self.hidden_to_hidden = nn.Linear(hidden_size, hidden_size)
         else:
