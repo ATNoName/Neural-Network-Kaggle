@@ -37,7 +37,7 @@ def main():
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.0075)
     # Train the model
-    neural.train_model(model, train_set, val_set, criterion, optimizer, 5000, 0.975)
+    neural.classify_train_model(model, train_set, val_set, criterion, optimizer, 5000, 0.975)
     # Run the model on the test data
     test_data_path = 'dataset/digit-recognizer/test.csv'
     test_data = d.extract_data(test_data_path)

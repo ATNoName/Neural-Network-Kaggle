@@ -47,7 +47,6 @@ def main():
     # Edit the data
     labels = data['Survived'].values
     data = preprocess(data).values
-    data = data.astype(np.float32)
     # Create the dataset
     data = d.BasicDataset(data, labels)
     split = int(0.9*len(data))
@@ -63,7 +62,7 @@ def main():
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.01)
     # Train the model
-    neural.train_model(model, train_set, val_set, criterion, optimizer, 1000, 1)
+    neural.classify_train_model(model, train_set, val_set, criterion, optimizer, 1000, 1)
     # Run the model on the test data
     test_data_path = 'dataset/titanic/test.csv'
     test_data = d.extract_data(test_data_path)

@@ -1,5 +1,6 @@
 import pandas as pd
 from torch.utils.data import Dataset, DataLoader, random_split
+import numpy as np
 
 '''This file does any data handling'''
 
@@ -29,11 +30,11 @@ def basic_preprocessing(data, norm = True):
         data = (data - data.mean()) / data.std()
     else:
         data = (data - data.min()) / (data.max() - data.min())
-    return data
+    return data.astype(np.float32)
 
 def train_val_split(data = Dataset, val_percent = float()):
     '''Splits the data into training and validation sets'''
-    n = (int) (len(data)//val_percent)
+    n = int(len(data) * val_percent)
     train_set, val_set = random_split(data, [n, len(data) - n])
     return train_set, val_set
 
