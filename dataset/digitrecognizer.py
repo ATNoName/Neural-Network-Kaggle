@@ -21,6 +21,7 @@ def main():
     x = data.loc[:, data.columns != 'label'].values
     x = x.astype(np.float32)
     x = x / 255.0
+    x = d.array_to_image(x, (x.shape[0], 1, 28, 28))
     y = data['label'].values
     # Create the dataset
     data = d.BasicDataset(x, y)
@@ -29,6 +30,7 @@ def main():
     train_set = DataLoader(train_set, batch_size=1000, shuffle=True)
     val_set = DataLoader(val_set, batch_size=1000, shuffle=False)
     # Configure the model
+    '''
     input_size = 784
     output_size = 10
     hidden_size = 300
@@ -38,6 +40,12 @@ def main():
     optimizer = optim.SGD(model.parameters(), lr=0.0075)
     # Train the model
     neural.classify_train_model(model, train_set, val_set, criterion, optimizer, 5000, 0.975)
+    '''
+    output_size = 10
+    model = neural.LeNet5(output_size)
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    neural.classify_train_model(model, train_set, val_set, criterion, optimizer, 1000, 0.99)
     # Run the model on the test data
     test_data_path = 'dataset/digit-recognizer/test.csv'
     test_data = d.extract_data(test_data_path)
@@ -47,7 +55,7 @@ def main():
     x_test = test_data.values
     x_test = x_test.astype(np.float32)
     x_test = x_test / 255.0
-    x_test = t.tensor(x_test, dtype=t.float32)
+    x_test = d.array_to_image(x_test, (x_test.shape[0], 1, 28, 28))
     y_test = neural.run(model, x_test)
     y_test = t.argmax(y_test, dim=1)
     # Convert model output to dataframe format and then to file

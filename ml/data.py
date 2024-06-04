@@ -32,6 +32,10 @@ def basic_preprocessing(data, norm = True):
         data = (data - data.min()) / (data.max() - data.min())
     return data.astype(np.float32)
 
+def array_to_image(data, dimensions = tuple()):
+    '''Reshape the data into an image'''
+    return data.reshape(dimensions)
+
 def train_val_split(data = Dataset, val_percent = float()):
     '''Splits the data into training and validation sets'''
     n = int(len(data) * val_percent)

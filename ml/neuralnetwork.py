@@ -39,6 +39,53 @@ class BasicNN(nn.Module):
                 x = self.activation(x)
         x = self.hidden_to_output(x)
         return x
+    
+class LeNet5(nn.Module):
+    def __init__(self, output_size):
+        super(LeNet5, self).__init__()
+        self.conv1 = nn.Conv2d(1, 6, kernel_size=5, stride=1, padding=2)
+        self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)
+        self.conv2 = nn.Conv2d(6, 16, kernel_size=5, stride=1)
+        self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
+        self.fc1 = nn.Linear(16*5*5, 120)
+        self.fc2 = nn.Linear(120, 84)
+        self.fc3 = nn.Linear(84, output_size)
+        
+    def forward(self, x):
+        '''Forward pass'''
+        x = self.pool1(t.relu(self.conv1(x)))
+        x = self.pool2(t.relu(self.conv2(x)))
+        x = x.view(-1, 16*5*5)
+        x = t.relu(self.fc1(x))
+        x = t.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x
+    
+    def hyperparameters(self):
+        '''Return the hyperparameters of the model'''
+        return None
+    
+class BasicRecurrentNN(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super(BasicRecurrentNN, self).__init__()
+        self.input_to_hidden = nn.Linear(input_size, hidden_size)
+        self.hidden_to_hidden = nn.Linear(hidden_size, hidden_size)
+        self.hidden_to_output = nn.Linear(hidden_size, output_size)
+        self.activation = nn.LeakyReLU()
+    
+    def forward(self, x, hidden):
+        '''Forward pass'''
+        hidden = self.activation(self.input_to_hidden(x) + self.hidden_to_hidden(hidden))
+        output = self.hidden_to_output(hidden)
+        return output, hidden
+    
+    def init_hidden(self, batch_size):
+        '''Initialize the hidden state'''
+        return t.zeros(batch_size, self.hidden_to_hidden.in_features)
+    
+    def hyperparameters(self):
+        '''Return the hyperparameters of the model'''
+        return {'hidden_size': self.input_to_hidden.out_features}
 
 def classify_validate(model, val_set):
     '''Validate the model'''
@@ -47,7 +94,7 @@ def classify_validate(model, val_set):
         output = run(model, data)
         output = t.argmax(output, dim=1)
         accuracy += t.sum(output == target).item()
-    return accuracy / len(val_set.dataset) * val_set.batch_size
+    return accuracy / len(val_set.dataset)
 
 def regression_validate(model, val_set, criterion):
     '''Validate the model'''
